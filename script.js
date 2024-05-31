@@ -1,4 +1,4 @@
-let taxiFareApiUrl = 'http://localhost:8001/predict'; // replace with your API endpoint
+const taxiFareApiUrl = 'https://taxifare.lewagon.ai/predict'; // replace with your API endpoint
 const centralCoordinates = [-74.00597, 40.71427]; // starting position [lng, lat]
 
 if (window.location.href.includes('https://taxifare.lewagon.com')) {
@@ -138,6 +138,18 @@ const displayMap = (start, stop) => {
   }
 };
 
+
+var map = L.map('map').setView([latitude, longitude], 13); // Set latitude and longitude to your desired values
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+}).addTo(map);
+
+// Add a marker
+var marker = L.marker([latitude, longitude]).addTo(map);
+marker.bindPopup("<b>Hello world!</b><br>I am here.").openPopup();
+
+
 const initGeocoder = (element, placeholder) => {
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
@@ -171,6 +183,7 @@ const dropoffAutocomplete = () => {
     displayMap(start, coordinates)
   });
 };
+
 
 const initFlatpickr = () => {
   flatpickr("#pickup_datetime", {
