@@ -138,18 +138,6 @@ const displayMap = (start, stop) => {
   }
 };
 
-
-var map = L.map('map').setView([latitude, longitude], 13); // Set latitude and longitude to your desired values
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors'
-}).addTo(map);
-
-// Add a marker
-var marker = L.marker([latitude, longitude]).addTo(map);
-marker.bindPopup("<b>Hello world!</b><br>I am here.").openPopup();
-
-
 const initGeocoder = (element, placeholder) => {
   const geocoder = new MapboxGeocoder({
     accessToken: mapboxgl.accessToken,
@@ -183,7 +171,6 @@ const dropoffAutocomplete = () => {
     displayMap(start, coordinates)
   });
 };
-
 
 const initFlatpickr = () => {
   flatpickr("#pickup_datetime", {
@@ -232,6 +219,36 @@ const predict = () => {
     });
   }
 };
+
+mapboxgl.accessToken = 'your_access_token_here'; // Replace with your actual Mapbox access token
+var map = new mapboxgl.Map({
+    container: 'map', // HTML container id
+    style: 'mapbox://styles/mapbox/streets-v11', // Style URL
+    center: [-74.00597, 40.71427], // Initial position [lng, lat]
+    zoom: 9 // Initial zoom level
+});
+
+var geocoder = new MapboxGeocoder({
+  accessToken: mapboxgl.accessToken,
+  mapboxgl: mapboxgl,
+  placeholder: 'Enter pickup location', // Placeholder text for the input
+  proximity: {
+      longitude: -74.00597,
+      latitude: 40.71427
+  }
+});
+
+map.addControl(geocoder);
+
+geocoder.on('result', function(e) {
+  var coords = e.result.geometry.coordinates;
+  // Place a marker or update map center
+  new mapboxgl.Marker()
+      .setLngLat(coords)
+      .addTo(map);
+  map.flyTo({center: coords});
+});
+
 
 displayMap();
 pickupAutocomplete();
